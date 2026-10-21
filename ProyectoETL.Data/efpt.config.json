@@ -1,0 +1,106 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "ElectivadbContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "IrregularWords": null,
+   "MinimumProductVersion": "2.6.1763",
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PluralRules": null,
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "ProyectoETL.Data",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 3,
+   "SelectedToBeGenerated": 0,
+   "SingularRules": null,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Categoria]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Clasificacion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Cliente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FuentedeDatos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Producto]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SocialComments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Surveys]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TipodeFuente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[WebReviews]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[vw_OpinionesConsolidadas]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[vw_ResumenPorProducto]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[usp_ConteoTablas]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[usp_LimpiarDatos]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[usp_OpinionesPorProducto]",
+         "ObjectType": 1
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": true,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": true,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false,
+   "UseTypedTvpParameters": true
+}
