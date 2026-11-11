@@ -1,6 +1,5 @@
 ﻿using ProyectoETL.Data.Daos;
 using ProyectoETL.Data.Services;
-using ProyectoETL.Data.Models;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -13,18 +12,7 @@ try
 
 
 
-    bool limpiarAntes = false;   // TRUE: VACÍA LAS TABLAS ANTES DE CARGAR. VUELVE A PONERLO EN FALSE DESPUÉS.
-
-    if (limpiarAntes)
-    {
-        var salidaLimpieza = new OutputParameter<string>();
-        await db.GetProcedures().usp_LimpiarDatosAsync(salidaLimpieza);
-        Console.WriteLine($"Limpieza de tablas (usp_LimpiarDatos): {salidaLimpieza.Value}");
-        Console.WriteLine();
-    }
-
-
-    var resultados = new List<ResultadoCarga>
+       var resultados = new List<ResultadoCarga>
     {
         // GRUPO 1: CATÁLOGOS
         servicio.CargarCategorias(carpeta),
@@ -55,16 +43,6 @@ try
    
     var rutaLog = LogService.GuardarRechazados(resultados, Path.Combine(carpeta, "Logs"));
     Console.WriteLine($"Log de rechazados: {rutaLog}");
-
-
-    var procedimientos = db.GetProcedures();
-    var salida = new OutputParameter<string>();
-    var conteos = await procedimientos.usp_ConteoTablasAsync(salida);
-
-    Console.WriteLine();
-    Console.WriteLine($"CONTEOS REALES EN LA BASE (usp_ConteoTablas: {salida.Value})");
-    foreach (var c in conteos)
-        Console.WriteLine($"{c.Tabla,-16}{c.Registros,11}");
 }
 catch (Exception ex)
 {

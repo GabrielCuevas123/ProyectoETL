@@ -29,10 +29,6 @@ public partial class ElectivadbContext : DbContext
 
     public virtual DbSet<TipodeFuente> TipodeFuente { get; set; }
 
-    public virtual DbSet<VwOpinionesConsolidadas> VwOpinionesConsolidadas { get; set; }
-
-    public virtual DbSet<VwResumenPorProducto> VwResumenPorProducto { get; set; }
-
     public virtual DbSet<WebReviews> WebReviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -121,53 +117,6 @@ public partial class ElectivadbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(60)
                 .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<VwOpinionesConsolidadas>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("vw_OpinionesConsolidadas");
-
-            entity.Property(e => e.Canal)
-                .IsRequired()
-                .HasMaxLength(10)
-                .IsUnicode(false);
-            entity.Property(e => e.Categoria)
-                .IsRequired()
-                .HasMaxLength(60)
-                .IsUnicode(false);
-            entity.Property(e => e.Clasificacion)
-                .HasMaxLength(60)
-                .IsUnicode(false);
-            entity.Property(e => e.Cliente)
-                .HasMaxLength(60)
-                .IsUnicode(false);
-            entity.Property(e => e.Comentario)
-                .IsRequired()
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.Producto)
-                .IsRequired()
-                .HasMaxLength(60)
-                .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<VwResumenPorProducto>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("vw_ResumenPorProducto");
-
-            entity.Property(e => e.Categoria)
-                .IsRequired()
-                .HasMaxLength(60)
-                .IsUnicode(false);
-            entity.Property(e => e.Producto)
-                .IsRequired()
-                .HasMaxLength(60)
-                .IsUnicode(false);
-            entity.Property(e => e.PromedioCalificacion).HasColumnType("decimal(4, 2)");
         });
 
         modelBuilder.Entity<WebReviews>(entity =>

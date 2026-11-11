@@ -53,26 +53,6 @@
       {
          "Name": "[dbo].[WebReviews]",
          "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[vw_OpinionesConsolidadas]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[vw_ResumenPorProducto]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[usp_ConteoTablas]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[usp_LimpiarDatos]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[usp_OpinionesPorProducto]",
-         "ObjectType": 1
       }
    ],
    "UiHint": null,
