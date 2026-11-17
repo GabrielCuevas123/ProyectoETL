@@ -6,6 +6,21 @@ var app = builder.Build();
 
 var cadenaConexion = app.Configuration.GetConnectionString("Electivadb")!;
 
+var claveApi = app.Configuration["ApiKey"]
+    ?? throw new InvalidOperationException("Falta la configuración ApiKey (secretos de usuario).");
+
+app.Use(async (contexto, siguiente) =>
+{
+    if (!contexto.Request.Headers.TryGetValue("X-Api-Key", out var recibida) || recibida != claveApi)
+    {
+        contexto.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        await contexto.Response.WriteAsync("Clave de API inválida o ausente.");
+        return;
+    }
+
+    await siguiente();
+});
+
 app.MapGet("/api/comentarios", async (CancellationToken ct) =>
 {
     var comentarios = new List<ComentarioDto>();

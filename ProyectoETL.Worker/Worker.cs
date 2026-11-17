@@ -7,14 +7,16 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly IConfiguration _config;
+    private readonly IHttpClientFactory _httpFactory;
     private readonly IHostApplicationLifetime _lifetime;
 
-    public Worker(ILogger<Worker> logger, ILoggerFactory loggerFactory,
-                  IConfiguration config, IHostApplicationLifetime lifetime)
+    public Worker(ILogger<Worker> logger, ILoggerFactory loggerFactory, IConfiguration config,
+                  IHttpClientFactory httpFactory, IHostApplicationLifetime lifetime)
     {
         _logger = logger;
         _loggerFactory = loggerFactory;
         _config = config;
+        _httpFactory = httpFactory;
         _lifetime = lifetime;
     }
 
@@ -31,17 +33,26 @@ public class Worker : BackgroundService
 
                 new DatabaseExtractor(
                     _config.GetConnectionString("Electivadb")!,
-                    _loggerFactory.CreateLogger<DatabaseExtractor>())
+                    _loggerFactory.CreateLogger<DatabaseExtractor>()),
+
+                new ApiExtractor(
+                    _httpFactory.CreateClient("ComentariosApi"),
+                    _config["Extraccion:RutaComentarios"]!,
+                    _loggerFactory.CreateLogger<ApiExtractor>())
             };
 
+            var resultados = new List<ResultadoExtraccion>();
             foreach (var extractor in extractores)
-            {
-                var resultado = await extractor.ExtraerAsync(stoppingToken);
+                resultados.Add(await extractor.ExtraerAsync(stoppingToken));
 
-                foreach (var c in resultado.Conjuntos)
-                    _logger.LogInformation("Prueba: {Fuente} / {Conjunto}: {Filas} filas",
-                        resultado.Fuente, c.Nombre, c.Filas.Count);
-            }
+            var escritor = new StagingWriter(
+                _config["Extraccion:CarpetaStaging"]!,
+                _loggerFactory.CreateLogger<StagingWriter>());
+
+            var carpeta = await escritor.GuardarAsync(resultados, stoppingToken);
+
+            _logger.LogInformation("Extracción guardada en {Carpeta}. Total: {Filas} filas",
+                carpeta, resultados.Sum(r => r.TotalFilas));
         }
         catch (Exception ex)
         {
