@@ -31,6 +31,8 @@ public class Worker : BackgroundService
             // Las tres extracciones arrancan a la vez y se espera a que todas terminen.
             var intentos = await Task.WhenAll(lista.Select(e => ExtraerSeguroAsync(e, stoppingToken)));
 
+            var msExtraccion = reloj.ElapsedMilliseconds;
+
             var exitosos = intentos.Where(r => r != null).Select(r => r!).ToList();
             var fallidas = lista.Count - exitosos.Count;
 
@@ -46,10 +48,13 @@ public class Worker : BackgroundService
                 _logger.LogInformation("Resumen: {Fuente} = {Filas} filas ({Ms} ms)",
                     r.Fuente, r.TotalFilas, r.Duracion.TotalMilliseconds);
 
+            _logger.LogInformation("Extracción terminada: {Ok} de {Total} fuentes, {Filas} filas.",
+                 exitosos.Count, lista.Count, exitosos.Sum(r => r.TotalFilas));
+
             _logger.LogInformation(
-                "Extracción terminada: {Ok} de {Total} fuentes, {Filas} filas. Tiempo total {Total_ms} ms (suma de los tiempos individuales: {Suma} ms)",
-                exitosos.Count, lista.Count, exitosos.Sum(r => r.TotalFilas),
-                reloj.ElapsedMilliseconds, (long)exitosos.Sum(r => r.Duracion.TotalMilliseconds));
+                "Tiempos: extracción en paralelo {Paralelo} ms; suma de los tiempos individuales (lo que tardaría en secuencia) {Secuencial} ms; guardado en staging {Guardado} ms; total {Total_ms} ms",
+                msExtraccion, (long)exitosos.Sum(r => r.Duracion.TotalMilliseconds),
+                reloj.ElapsedMilliseconds - msExtraccion, reloj.ElapsedMilliseconds);
 
             if (fallidas > 0)
                 _logger.LogWarning("{Fallidas} fuente(s) fallaron: revisa los errores anteriores", fallidas);
