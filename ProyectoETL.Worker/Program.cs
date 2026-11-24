@@ -1,3 +1,4 @@
+using ProyectoETL.Data.Cargas;
 using ProyectoETL.Data.Extractors;
 using ProyectoETL.Worker;
 
@@ -32,6 +33,15 @@ builder.Services.AddSingleton<IExtractor>(sp => new ApiExtractor(
 builder.Services.AddSingleton(sp => new StagingWriter(
     config["Extraccion:CarpetaStaging"]!,
     sp.GetRequiredService<ILogger<StagingWriter>>()));
+
+// Carga de dimensiones (ADO.NET, capa de datos)
+builder.Services.AddSingleton(sp => new StagingReader(
+    config["Extraccion:CarpetaStaging"]!));
+
+builder.Services.AddSingleton(sp => new DimensionesLoader(
+    config.GetConnectionString("DWOpiniones")!,
+    sp.GetRequiredService<StagingReader>(),
+    sp.GetRequiredService<ILogger<DimensionesLoader>>()));
 
 builder.Services.AddHostedService<Worker>();
 

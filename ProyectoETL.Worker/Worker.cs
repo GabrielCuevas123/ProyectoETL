@@ -1,3 +1,4 @@
+using ProyectoETL.Data.Cargas;
 using System.Diagnostics;
 using ProyectoETL.Data.Extractors;
 
@@ -9,13 +10,16 @@ public class Worker : BackgroundService
     private readonly IEnumerable<IExtractor> _extractores;
     private readonly StagingWriter _escritor;
     private readonly IHostApplicationLifetime _lifetime;
+    private readonly DimensionesLoader _cargador;
 
     public Worker(ILogger<Worker> logger, IEnumerable<IExtractor> extractores,
-                  StagingWriter escritor, IHostApplicationLifetime lifetime)
+                StagingWriter escritor, DimensionesLoader cargador,
+                IHostApplicationLifetime lifetime)
     {
         _logger = logger;
         _extractores = extractores;
         _escritor = escritor;
+        _cargador = cargador;
         _lifetime = lifetime;
     }
 
@@ -58,6 +62,25 @@ public class Worker : BackgroundService
 
             if (fallidas > 0)
                 _logger.LogWarning("{Fallidas} fuente(s) fallaron: revisa los errores anteriores", fallidas);
+
+            // Carga de las dimensiones al DataWarehouse
+            if (exitosos.Count > 0)
+            {
+                try
+                {
+                    var relojCarga = Stopwatch.StartNew();
+                    var mensajes = await _cargador.CargarAsync(stoppingToken);
+
+                    foreach (var m in mensajes)
+                        _logger.LogInformation("Carga: {Mensaje}", m);
+
+                    _logger.LogInformation("Dimensiones cargadas en {Ms} ms", relojCarga.ElapsedMilliseconds);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "La carga de dimensiones falló; no se modificó el DataWarehouse");
+                }
+            }
         }
         catch (Exception ex)
         {
